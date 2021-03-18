@@ -5,11 +5,13 @@ function App() {
   return (
     <div className="container">
       <header className="App-header">
-        <H1>Weather App</H1>
+        <h1>Weather App</h1>
       </header>
       <footer>
         <p>
-          Open source Code by Lucero Cardenas
+          <a href="https://github.com/lucero-cardenas/weather-react-final-project" target="_blank" rel="noreferrer">Open source code</a>
+          {" "}by{" "}
+          <a href="mailto:lucero.cardenas@gmail.com" target="_blank" rel="noreferrer">Lucero Cardenas</a>
         </p>
       </footer>
     </div>
