@@ -1,9 +1,9 @@
 import './App.css';
 
-function App() {
+export default function App() {
   return (
     <div className="container">
-      <header className="App-header">
+      <header>
         <h1>Weather App</h1>
       </header>
       <footer>
@@ -16,5 +16,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
