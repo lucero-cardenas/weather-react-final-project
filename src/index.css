@@ -4,3 +4,13 @@ li {
 ul {
   padding: 0px;
 }
+.weather ul {
+  display: inline;
+}
+li h2 {
+  font-size: 60px;
+}
+.icon,
+.temp {
+  text-align: center;
+}
