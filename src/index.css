@@ -8,9 +8,33 @@ ul {
   display: inline;
 }
 li h2 {
-  font-size: 60px;
+  font-size: 65px;
 }
-.icon,
-.temp {
+#icon,
+#temp {
   text-align: center;
+}
+span {
+  width: 0%;
+  position: relative;
+  left: 3rem;
+}
+.card {
+  margin: 30px;
+  background: linear-gradient(to top, #00ffd5ab 0%, #00d9ff86 100%);
+  min-width: 120px;
+}
+row {
+  padding: 30px auto;
+}
+#city-form,
+#forecast {
+  position: relative;
+  left: 3rem;
+}
+#city-form {
+  margin-top: 1rem;
+}
+#forecast {
+  margin-bottom: 1rem;
 }
