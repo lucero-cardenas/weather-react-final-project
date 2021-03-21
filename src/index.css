@@ -1,3 +1,6 @@
+.Weather {
+  margin: auto;
+}
 li {
   list-style: none;
 }
@@ -9,6 +12,9 @@ ul {
 }
 li h2 {
   font-size: 65px;
+}
+#city-temp {
+  align-items: center;
 }
 #icon,
 #temp {
@@ -27,7 +33,11 @@ span {
 row {
   padding: 30px auto;
 }
+form {
+  margin-bottom: 5px;
+}
 #city-form,
+#mood-form,
 #forecast {
   position: relative;
   left: 3rem;
@@ -37,4 +47,8 @@ row {
 }
 #forecast {
   margin-bottom: 1rem;
+}
+
+footer {
+  text-align: center;
 }
