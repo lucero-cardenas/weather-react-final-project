@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import "./Weather.css";
-import CurrentTime from "./CurrentTime.js";
 import axios from "axios";
+import WeatherInfo from "./WeatherInfo";
+import Forecast from "./Forecast";
 
 export default function Weather () {
     const apiKey = '82d58ea2bafbe8a8a9c84742e41d01ce';
-    let position = null;
     let [city, setCity] = useState ("New York");
-    let [search, setSearch] = useState (false);
     const unitArray = {metric:" km/h", imperial:" mph"};
     let [units, setUnits] = useState("metric");
     let [cityTemp, setCityTemp] = useState({wContent: false});
-
+    let [forecast, setForecast] = useState({fContent: false});
     let icons = {
         "01d": `fa-sun`,
         "01n": `fa-moon`,
@@ -45,11 +44,27 @@ export default function Weather () {
             temperature:Math.round(response.data.main.temp),
             max:Math.round(response.data.main.temp_max),
             min:Math.round(response.data.main.temp_min),
-            icon:response.data.weather[0].icon,
+            icon:<i className={`fas ${icons[response.data.weather[0].icon]}`} alt={response.data.weather[0].description}></i>,
             humidity:response.data.main.humidity,
-            wind_speed:response.data.wind.speed,
+            wind_speed:`${response.data.wind.speed}${unitArray[units]}`,
             description:response.data.weather[0].description,
             feels_like:Math.round(response.data.main.feels_like)});
+    }
+    function forecastData(response){
+        console.log(response);
+
+        function forecastWeekDay(timeStamp){
+            let newDate = new Date(timeStamp);
+            let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            let day = days[newDate.getDay()]
+            return `${day}`;
+        }
+        setForecast({fContent:true,
+            precipitation:response.data.list[0].pop*100,
+            wd1:forecastWeekDay(response.data.list[8].dt*1000), icon1:<i className={`fas ${icons[response.data.list[8].weather[0].icon]}`}></i>, max1:Math.round(response.data.list[8].main.temp_max), min1:Math.round(response.data.list[8].main.temp_min),
+            wd2:forecastWeekDay(response.data.list[16].dt*1000), icon2:<i className={`fas ${icons[response.data.list[16].weather[0].icon]}`}></i>, max2:Math.round(response.data.list[16].main.temp_max), min2:Math.round(response.data.list[16].main.temp_min),
+            wd3:forecastWeekDay(response.data.list[24].dt*1000), icon3:<i className={`fas ${icons[response.data.list[24].weather[0].icon]}`}></i>, max3:Math.round(response.data.list[24].main.temp_max), min3:Math.round(response.data.list[24].main.temp_min),
+            wd4:forecastWeekDay(response.data.list[32].dt*1000), icon4:<i className={`fas ${icons[response.data.list[32].weather[0].icon]}`}></i>, max4:Math.round(response.data.list[32].main.temp_max), min4:Math.round(response.data.list[32].main.temp_min)});
     }
 
     function showC(event){
@@ -68,12 +83,14 @@ export default function Weather () {
         let apiUrl = {cityWeather:`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`,
         cityForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`};
         axios.get(apiUrl.cityWeather).then(weatherData);
+        axios.get(apiUrl.cityForecast).then(forecastData);
+        console.log(apiUrl.cityForecast);
     }
 
     const form = (<form id="city-form" onSubmit={searchSubmit}>
                     <div className="row">
                         <div className="col-8">
-                            <input type="search" placeholder="Enter a city" className="form-control" onChange={newCity}/>
+                            <input type="search" placeholder="Enter a city" className="form-control" autoComplete="yes" onChange={newCity}/>
                         </div>
                         <div className="col-4">
                             <input type="submit" value="🔍" className="btn btn-light mr-4"/>
@@ -82,46 +99,17 @@ export default function Weather () {
                     </div>
                 </form>);
 
-    if (cityTemp.wContent){
+    if (cityTemp.wContent && forecast.fContent){
         return (
             <div className= "Weather card container">
                 {form}
-                <span className="row"><h1 className= "card-title">{cityTemp.city}, {cityTemp.country}</h1></span>
-                <div className="row g-3" id="city-temp">
-                    <span className="col-xs-6 col-sm-4">
-                        <ul>
-                            <li><h5 className= "card-subtitle mb-2 text-muted"><CurrentTime/></h5></li>
-                            <li className="card-subtitle mb-2 text-muted">Humidity:{cityTemp.humidity}%</li>
-                            <li className="card-subtitle mb-2 text-muted">Wind Speed: {cityTemp.wind_speed} {unitArray[units]}</li>
-
-                        </ul>
-                    </span>
-                    <span className="col-xs-6 col-sm-2" id="icon">
-                        <ul>
-                            <li><h2 className="card-title"><i className={`fas ${icons[cityTemp.icon]}`}></i></h2></li>
-                            <li className="card-subtitle mb-2 text-muted">{cityTemp.description}</li>
-                        </ul>
-                    </span>
-                    <span className="col-xs-12 col-sm-6"  id="temp">
-                        <div className="row">
-                            <span className="col-xs-8 col-sm-4">
-                                <ul>
-                                    <li><h2 className="card-title">{cityTemp.temperature}°</h2></li>
-                                    <li className="card-subtitle mb-2 text-muted">Feels like: {cityTemp.feels_like}°</li>
-                                </ul>
-                            </span>
-                            <span className="col-xs-4 col-sm-2">
-                                <ul>
-                                    <li><h4 className="card-title"><button type="link" href="/" onCLick={showC}>C</button> | <button type="link" href="/" onCLick={showF}>F</button></h4></li>
-                                    <li className="card-subtitle mb-2"><strong>Max: {cityTemp.max}°</strong></li>
-                                    <li className="card-subtitle mb-2">Min: {cityTemp.min}°</li>
-                                </ul>
-                            </span>
-                        </div>
-                    </span>
-                </div>
+                <span className= "row">
+                    <h4 className="col-6 card-title"></h4>
+                    <span className="col-6"><button type="link" href="/" onCLick={showC}>C</button> | <button type="link" href="/" onCLick={showF}>F</button></span>
+                </span>
+                <WeatherInfo info={cityTemp} precip={forecast.precipitation}/>
                 <div className="row"  id="forecast">
-                    <h3>Forecast</h3>
+                    <Forecast info={forecast}/>
                 </div>
             </div>);
     } else {
