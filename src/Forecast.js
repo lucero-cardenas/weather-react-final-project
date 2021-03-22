@@ -1,7 +1,7 @@
 import React from "react";
 import "./Forecast.css";
 
-export default function (forecast){
+export default function Forecast (forecast){
     console.log(forecast.info)
     return(
         <div className= "row">

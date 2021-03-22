@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function CurrentTime(){
     let currentDate = new Date();
 
