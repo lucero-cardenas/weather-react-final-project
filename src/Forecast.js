@@ -3,19 +3,32 @@ import "./Forecast.css";
 
 export default function (forecast){
     console.log(forecast.info)
-    let index = 1;
-
-    while (index < 5) {
-        index = index + 1 ;
-        return(
+    return(
         <div className= "row">
-            <div class="col">
-                <h4>{forecast.info.icon[index]}</h4>
-                <p class="card-text topLow"><strong>{forecast.info.max[index]}°</strong> {forecast.info.min[index]}°</p>
+            <div class="col-3">
+                <h4>{forecast.info.icon1}</h4>
+                <p class="card-text topLow"><strong>{forecast.info.max1}°</strong> {forecast.info.min1}°</p>
                 <p class="card-text maxMin"><strong>Max</strong> Min</p>
-                <p class="card-text day">{forecast.info.wd[index]}</p>
+                <p class="card-text day">{forecast.info.wd1}</p>
+            </div>
+            <div class="col-3">
+                <h4>{forecast.info.icon2}</h4>
+                <p class="card-text topLow"><strong>{forecast.info.max2}°</strong> {forecast.info.min2}°</p>
+                <p class="card-text maxMin"><strong>Max</strong> Min</p>
+                <p class="card-text day">{forecast.info.wd2}</p>
+            </div>
+            <div class="col-3">
+                <h4>{forecast.info.icon3}</h4>
+                <p class="card-text topLow"><strong>{forecast.info.max3}°</strong> {forecast.info.min3}°</p>
+                <p class="card-text maxMin"><strong>Max</strong> Min</p>
+                <p class="card-text day">{forecast.info.wd3}</p>
+            </div>
+            <div class="col-3">
+                <h4>{forecast.info.icon4}</h4>
+                <p class="card-text topLow"><strong>{forecast.info.max4}°</strong> {forecast.info.min4}°</p>
+                <p class="card-text maxMin"><strong>Max</strong> Min</p>
+                <p class="card-text day">{forecast.info.wd4}</p>
             </div>
         </div>
-        );
-  }
+    );
 }

@@ -1,12 +1,12 @@
 import "./App.css";
-import Weather2 from "./Weather2";
+import Weather from "./Weather";
 
 export default function App() {
   return (
     <div className="App">
       <div className="container-lg">
         <header>
-          <Weather2/>
+          <Weather/>
         </header>
         <footer>
           <p>

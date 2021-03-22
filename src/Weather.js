@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import "./Weather.css";
-import CurrentTime from "./CurrentTime.js";
 import axios from "axios";
+import WeatherInfo from "./WeatherInfo";
+import Forecast from "./Forecast";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Weather () {
-    const apiKey = '82d58ea2bafbe8a8a9c84742e41d01ce';
-    let position = null;
-    let [city, setCity] = useState ("");
-    let [search, setSearch] = useState (false);
+    const apiKey = '055d247c8d86f6f7cc330f806f31830d';
+    let [city, setCity] = useState ("New York");
     const unitArray = {metric:" km/h", imperial:" mph"};
     let [units, setUnits] = useState("metric");
     let [cityTemp, setCityTemp] = useState({wContent: false});
@@ -32,73 +32,105 @@ export default function Weather () {
         "50d": `fa-smog`,
         "50n": `fa-smog`
     };
+    let [cButton, setCButton] = useState("btn btn-outline-dark btn-lg disabled");
+    let [cDisable, setCDisable] = useState("true");
+    let [fButton, setFButton] = useState("btn btn-dark btn-lg");
+    let [fDisable, setFDisable] = useState("false");
 
-    getPosition();
-
-    function myPosition(response){
-        position = {latitude: response.coords.latitude, longitude: response.coords.longitude};
-        getTemp();
-    }    
-    function getPosition(){
-        navigator.geolocation.getCurrentPosition(myPosition);
-        setSearch(false);
-    }
-
+ 
     function newCity(event) {
         setCity(event.target.value);
     }
 
     function weatherData(response){
-        setCityTemp({wContent:true, 
+        setCityTemp({wContent:true,
             country:response.data.sys.country,
             city:response.data.name,
             temperature:Math.round(response.data.main.temp),
             max:Math.round(response.data.main.temp_max),
             min:Math.round(response.data.main.temp_min),
-            icon:response.data.weather[0].icon,
+            icon:<i className={`fas ${icons[response.data.weather[0].icon]}`} alt={response.data.weather[0].description}></i>,
             humidity:response.data.main.humidity,
-            wind_speed:response.data.wind.speed,
+            wind_speed:`${response.data.wind.speed}${unitArray[units]}`,
             description:response.data.weather[0].description,
-            feels_like:response.data.main.feels_like});
-        setWContent(true);
+            feels_like:Math.round(response.data.main.feels_like)});
+        setCity(response.data.name); //to use city in case of unit switch
+        console.log(cityTemp);
     }
     function forecastData(response){
         console.log(response);
+
+        function forecastWeekDay(timeStamp){
+            let newDate = new Date(timeStamp);
+            let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            let day = days[newDate.getDay()]
+            return `${day}`;
+        }
         setForecast({fContent:true,
             precipitation:response.data.list[0].pop*100,
-            icon1:"", max1:"", min1:"", icon2:"", max2:"", min2:"", icon3:"", max3:"", min3:"", icon4:"", max4:"", min4:""});
-        setFContent(true);
-    }
-    function getTemp(){
-        setWContent(false);
-        setFContent(false);
+            wd1:forecastWeekDay(response.data.list[8].dt*1000), icon1:<i className={`fas ${icons[response.data.list[8].weather[0].icon]}`}></i>, max1:Math.round(response.data.list[8].main.temp_max), min1:Math.round(response.data.list[8].main.temp_min),
+            wd2:forecastWeekDay(response.data.list[16].dt*1000), icon2:<i className={`fas ${icons[response.data.list[16].weather[0].icon]}`}></i>, max2:Math.round(response.data.list[16].main.temp_max), min2:Math.round(response.data.list[16].main.temp_min),
+            wd3:forecastWeekDay(response.data.list[24].dt*1000), icon3:<i className={`fas ${icons[response.data.list[24].weather[0].icon]}`}></i>, max3:Math.round(response.data.list[24].main.temp_max), min3:Math.round(response.data.list[24].main.temp_min),
+            wd4:forecastWeekDay(response.data.list[32].dt*1000), icon4:<i className={`fas ${icons[response.data.list[32].weather[0].icon]}`}></i>, max4:Math.round(response.data.list[32].main.temp_max), min4:Math.round(response.data.list[32].main.temp_min)});
+        console.log(forecast);
     }
 
     function showC(event){
         event.preventDefault();
         setUnits("metric");
-        getTemp();
+        setCButton("btn btn-outline-dark btn-sm disabled");
+        setCDisable("true");
+        setFButton("btn btn-dark btn-sm");
+        setFDisable("false");
+        let apiUrl = {cityWeather:`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`,
+        cityForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`};
+        axios.get(apiUrl.cityWeather).then(weatherData);
+        axios.get(apiUrl.cityForecast).then(forecastData);
     }
     function showF(event){
         event.preventDefault();
         setUnits("imperial");
-        getTemp();
+        setCButton("btn btn-dark btn-sm");
+        setCDisable("false");
+        setFButton("btn btn-outline-dark btn-sm disabled");
+        setFDisable("true");
+        let apiUrl = {cityWeather:`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`,
+        cityForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`};
+        axios.get(apiUrl.cityWeather).then(weatherData);
+        axios.get(apiUrl.cityForecast).then(forecastData);
     }
 
     function searchSubmit(event){
         event.preventDefault();
-        setSearch(true);
-        getTemp();
+        let apiUrl = {cityWeather:`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`,
+        cityForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`};
+        axios.get(apiUrl.cityWeather).then(weatherData);
+        axios.get(apiUrl.cityForecast).then(forecastData);
+    }
+
+    function myPosition(response) {
+        console.log(response);
+        setCityTemp({wContent: false});
+        setForecast({fContent: false});
+        let apiUrl = {currLocWeather: `https://api.openweathermap.org/data/2.5/weather?lat=${response.coords.latitude}&lon=${response.coords.longitude}&units=${units}&appid=${apiKey}`,
+        currLocForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${response.coords.latitude}&lon=${response.coords.longitude}&units=${units}&appid=${apiKey}`};
+        axios.get(apiUrl.currLocWeather).then(weatherData);
+        axios.get(apiUrl.currLocForecast).then(forecastData);
+        console.log(apiUrl);
+    }
+
+    function getPosition() {
+        navigator.geolocation.getCurrentPosition(myPosition);
     }
 
     const form = (<form id="city-form" onSubmit={searchSubmit}>
                     <div className="row">
                         <div className="col-8">
-                            <input type="search" placeholder="Enter a city" className="form-control" onChange={newCity}/>
+                            <input type="search" placeholder="Enter a city" className="form-control mr-4" autoComplete="yes" onChange={newCity}/>
                         </div>
                         <div className="col-4">
                             <input type="submit" value="🔍" className="btn btn-light mr-4"/>
-                            <input type="button" value="Current location" className="btn btn-light" onCLick={getPosition}/>
+                            <input type="reset" value="Current Location" className="btn btn-light" onClick={getPosition}/>
                         </div>
                     </div>
                 </form>);
@@ -107,63 +139,23 @@ export default function Weather () {
         return (
             <div className= "Weather card container">
                 {form}
-                <span className="row"><h1 className= "card-title">{cityTemp.city}, {cityTemp.country}</h1></span>
-                <div className="row g-3" id="city-temp">
-                    <span className="col-xs-6 col-sm-4">
-                        <ul>
-                            <li><h5 className= "card-subtitle mb-2 text-muted"><CurrentTime/></h5></li>
-                            <li className="card-subtitle mb-2 text-muted">Humidity:{cityTemp.humidity}%</li>
-                            <li className="card-subtitle mb-2 text-muted">Wind Speed: {cityTemp.wind_speed} {unitArray[units]}</li>
-                            <li className="card-subtitle mb-2 text-muted">Precipitation: {forecast.precipitation}%</li>
-                        </ul>
-                    </span>
-                    <span className="col-xs-6 col-sm-2" id="icon">
-                        <ul>
-                            <li><h2 className="card-title"><i className={`fas ${icons[cityTemp.icon]}`}></i></h2></li>
-                            <li className="card-subtitle mb-2 text-muted">{cityTemp.description}</li>
-                        </ul>
-                    </span>
-                    <span className="col-xs-12 col-sm-6"  id="temp">
-                        <div className="row">
-                            <span className="col-xs-8 col-sm-4">
-                                <ul>
-                                    <li><h2 className="card-title">`${cityTemp.temperature}°`</h2></li>
-                                    <li className="card-subtitle mb-2 text-muted">`Feels like: ${cityTemp.feels_like}°`</li>
-                                </ul>
-                            </span>
-                            <span className="col-xs-4 col-sm-2">
-                                <ul>
-                                    <li><h4 className="card-title"><button type="link" href="/" onCLick={showC}>C</button> | <button type="link" href="/" onCLick={showF}>F</button></h4></li>
-                                    <li className="card-subtitle mb-2"><strong>Max: {cityTemp.max}°</strong></li>
-                                    <li className="card-subtitle mb-2">Min: {cityTemp.min}°</li>
-                                </ul>
-                            </span>
-                        </div>
-                    </span>
+                <div className= "row text-right">
+                    <div className="units">
+                        <a href="/" className={cButton} tabindex="-1" role="button" aria-disabled={cDisable} onClick={showC}>C</a> | <a href="/" className={fButton}tabindex="-1" role="button" aria-disabled={fDisable} onClick={showF}>F</a>
+                    </div>
                 </div>
+                <WeatherInfo info={cityTemp} precip={forecast.precipitation}/>
                 <div className="row"  id="forecast">
-                    <h3>Forecast</h3>
+                    <Forecast info={forecast}/>
                 </div>
-            </div>);
+            </div>
+        );
     } else {
-        let apiUrl = {cityWeather:`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`,
-        cityForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`,
-        currLocWeather: `https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&units=${units}&appid=${apiKey}`,
-        currLocForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${position.latitude}&lon=${position.longitude}&units=${units}&appid=${apiKey}`};
-
-        if (search){
-            axios.get(apiUrl.cityWeather).then(weatherData);
-            axios.get(apiUrl.cityForecast).then(forecastData);
-            console.log(apiUrl.cityForecast);
-        }else{
-            axios.get(apiUrl.currLocWeather).then(weatherData);
-            axios.get(apiUrl.currLocForecast).then(forecastData);
-        }
-
         return (
             <div className= "Weather card container">
                 {form}
-                <h2>Loading...</h2>
-            </div>);
+                <h2>Loading ...</h2>
+            </div>
+        );
     }
 }

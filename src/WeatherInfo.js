@@ -1,11 +1,14 @@
 import React from "react";
 import CurrentTime from "./CurrentTime.js";
+import "./WeatherInfo.css"
 
 export default function WeatherInfo(cityTemp){
     console.log(cityTemp);
     return(
         <div>
-            <span className="row"><h1 className= "card-title">{cityTemp.info.city}, {cityTemp.info.country}</h1></span>
+            <div className="row">
+                <h1 className= "col-12 cityCountry">{cityTemp.info.city}, {cityTemp.info.country}</h1>
+            </div>
             <div className="row g-3" id="city-temp">
                 <span className="col-xs-6 col-sm-4">
                     <ul>
