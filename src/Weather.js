@@ -10,8 +10,8 @@ export default function Weather () {
     let [city, setCity] = useState ("New York");
     const unitArray = {metric:" km/h", imperial:" mph"};
     let [units, setUnits] = useState("metric");
-    let [cityTemp, setCityTemp] = useState({wContent: true});
-    let [forecast, setForecast] = useState({fContent: true});
+    let [cityTemp, setCityTemp] = useState({wContent: false});
+    let [forecast, setForecast] = useState({fContent: false});
     let icons = {
         "01d": `fa-sun`,
         "01n": `fa-moon`,
