@@ -10,8 +10,8 @@ export default function Weather () {
     let [city, setCity] = useState ("New York");
     const unitArray = {metric:" km/h", imperial:" mph"};
     let [units, setUnits] = useState("metric");
-    let [cityTemp, setCityTemp] = useState({wContent: false});
-    let [forecast, setForecast] = useState({fContent: false});
+    let [cityTemp, setCityTemp] = useState({wContent: true});
+    let [forecast, setForecast] = useState({fContent: true});
     let icons = {
         "01d": `fa-sun`,
         "01n": `fa-moon`,
@@ -32,9 +32,9 @@ export default function Weather () {
         "50d": `fa-smog`,
         "50n": `fa-smog`
     };
-    let [cButton, setCButton] = useState("btn btn-outline-dark btn-lg disabled");
+    let [cButton, setCButton] = useState("btn btn-dark active disable");
     let [cDisable, setCDisable] = useState("true");
-    let [fButton, setFButton] = useState("btn btn-dark btn-lg");
+    let [fButton, setFButton] = useState("btn btn-dark");
     let [fDisable, setFDisable] = useState("false");
 
  
@@ -78,9 +78,9 @@ export default function Weather () {
     function showC(event){
         event.preventDefault();
         setUnits("metric");
-        setCButton("btn btn-outline-dark btn-sm disabled");
+        setCButton("btn btn-dark active disable");
         setCDisable("true");
-        setFButton("btn btn-dark btn-sm");
+        setFButton("btn btn-dark");
         setFDisable("false");
         let apiUrl = {cityWeather:`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`,
         cityForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`};
@@ -90,9 +90,9 @@ export default function Weather () {
     function showF(event){
         event.preventDefault();
         setUnits("imperial");
-        setCButton("btn btn-dark btn-sm");
+        setCButton("btn btn-dark");
         setCDisable("false");
-        setFButton("btn btn-outline-dark btn-sm disabled");
+        setFButton("btn btn-dark active disable");
         setFDisable("true");
         let apiUrl = {cityWeather:`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`,
         cityForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`};
@@ -125,12 +125,13 @@ export default function Weather () {
 
     const form = (<form id="city-form" onSubmit={searchSubmit}>
                     <div className="row">
-                        <div className="col-8">
-                            <input type="search" placeholder="Enter a city" className="form-control mr-4" autoComplete="yes" onChange={newCity}/>
+                        <div className="col-7">
+                            <input type="search" placeholder="Enter a city" className="form-control mr-1" autoComplete="yes" onChange={newCity}/>
                         </div>
                         <div className="col-4">
-                            <input type="submit" value="🔍" className="btn btn-light mr-4"/>
-                            <input type="reset" value="Current Location" className="btn btn-light" onClick={getPosition}/>
+                            <input type="submit" value="🔍" className="btn btn-light mr-1"/>
+                            <input type="reset" value="Current Location" className="btn btn-light mr-4" onClick={getPosition}/>
+                            <a href="/" className={cButton} role="button" data-bs-toggle="button" aria-disabled={cDisable} onClick={showC}>C</a> | <a href="/" className={fButton} role="button" data-bs-toggle="button" aria-disabled={fDisable} onClick={showF}>F</a>
                         </div>
                     </div>
                 </form>);
@@ -139,14 +140,11 @@ export default function Weather () {
         return (
             <div className= "Weather card container">
                 {form}
-                <div className= "row text-right">
-                    <div className="units">
-                        <a href="/" className={cButton} tabindex="-1" role="button" aria-disabled={cDisable} onClick={showC}>C</a> | <a href="/" className={fButton}tabindex="-1" role="button" aria-disabled={fDisable} onClick={showF}>F</a>
+                <div id="main">
+                    <WeatherInfo info={cityTemp} precip={forecast.precipitation}/>
+                    <div className="row"  id="forecast">
+                        <Forecast info={forecast}/>
                     </div>
-                </div>
-                <WeatherInfo info={cityTemp} precip={forecast.precipitation}/>
-                <div className="row"  id="forecast">
-                    <Forecast info={forecast}/>
                 </div>
             </div>
         );

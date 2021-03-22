@@ -2,3 +2,16 @@ h4,
 p {
   text-align: center;
 }
+
+.second {
+  position: relative;
+  left: 10rem;
+}
+.third {
+  position: relative;
+  left: 20rem;
+}
+.fourth {
+  position: relative;
+  left: 30rem;
+}

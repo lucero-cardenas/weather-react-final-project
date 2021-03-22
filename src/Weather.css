@@ -1,7 +1,13 @@
 div .units {
-  text-align: right;
+  position: relative;
+  left: 15rem;
 }
 
 h2 {
   text-align: center;
+}
+
+.Weather #main {
+  position: relative;
+  left: 5rem;
 }
