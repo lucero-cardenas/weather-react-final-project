@@ -131,7 +131,7 @@ export default function Weather () {
                         <div className="col-4">
                             <input type="submit" value="🔍" className="btn btn-light mr-1"/>
                             <input type="reset" value="Current Location" className="btn btn-light mr-4" onClick={getPosition}/>
-                            <a href="/" className={cButton} role="button" data-bs-toggle="button" aria-disabled={cDisable} onClick={showC}>C</a> | <a href="/" className={fButton} role="button" data-bs-toggle="button" aria-disabled={fDisable} onClick={showF}>F</a>
+                            <a href="/" rel="noreferrer" className={cButton} role="button" data-bs-toggle="button" aria-disabled={cDisable} onClick={showC}>C</a> | <a href="/" rel="noreferrer" className={fButton} role="button" data-bs-toggle="button" aria-disabled={fDisable} onClick={showF}>F</a>
                         </div>
                     </div>
                 </form>);
