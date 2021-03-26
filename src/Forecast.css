@@ -2,16 +2,19 @@ h4,
 p {
   text-align: center;
 }
-
+.first {
+  position: relative;
+  left: 5rem;
+}
 .second {
   position: relative;
-  left: 10rem;
+  left: 15rem;
 }
 .third {
   position: relative;
-  left: 20rem;
+  left: 25rem;
 }
 .fourth {
   position: relative;
-  left: 30rem;
+  left: 35rem;
 }

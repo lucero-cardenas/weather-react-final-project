@@ -37,6 +37,8 @@ export default function Weather () {
     let [fButton, setFButton] = useState("btn btn-dark");
     let [fDisable, setFDisable] = useState("false");
 
+    let [search, setSearch] = useState(false); // to know when we're expecting results
+
  
     function newCity(event) {
         setCity(event.target.value);
@@ -68,15 +70,15 @@ export default function Weather () {
         }
         setForecast({fContent:true,
             precipitation:response.data.list[0].pop*100,
-            wd1:forecastWeekDay(response.data.list[8].dt*1000), icon1:<i className={`fas ${icons[response.data.list[8].weather[0].icon]}`}></i>, max1:Math.round(response.data.list[8].main.temp_max), min1:Math.round(response.data.list[8].main.temp_min),
-            wd2:forecastWeekDay(response.data.list[16].dt*1000), icon2:<i className={`fas ${icons[response.data.list[16].weather[0].icon]}`}></i>, max2:Math.round(response.data.list[16].main.temp_max), min2:Math.round(response.data.list[16].main.temp_min),
-            wd3:forecastWeekDay(response.data.list[24].dt*1000), icon3:<i className={`fas ${icons[response.data.list[24].weather[0].icon]}`}></i>, max3:Math.round(response.data.list[24].main.temp_max), min3:Math.round(response.data.list[24].main.temp_min),
-            wd4:forecastWeekDay(response.data.list[32].dt*1000), icon4:<i className={`fas ${icons[response.data.list[32].weather[0].icon]}`}></i>, max4:Math.round(response.data.list[32].main.temp_max), min4:Math.round(response.data.list[32].main.temp_min)});
+            wd1:forecastWeekDay(response.data.list[8].dt*1000), icon1:<i className={`fas ${icons[response.data.list[8].weather[0].icon]}`}></i>, temp1:Math.round(response.data.list[8].main.temp),
+            wd2:forecastWeekDay(response.data.list[16].dt*1000), icon2:<i className={`fas ${icons[response.data.list[16].weather[0].icon]}`}></i>, temp2:Math.round(response.data.list[16].main.temp),
+            wd3:forecastWeekDay(response.data.list[24].dt*1000), icon3:<i className={`fas ${icons[response.data.list[24].weather[0].icon]}`}></i>, temp3:Math.round(response.data.list[24].main.temp),
+            wd4:forecastWeekDay(response.data.list[32].dt*1000), icon4:<i className={`fas ${icons[response.data.list[32].weather[0].icon]}`}></i>, temp4:Math.round(response.data.list[32].main.temp)});
         console.log(forecast);
     }
 
     function showC(event){
-        event.preventDefault();
+        event.preventDefault(); 
         setUnits("metric");
         setCButton("btn btn-dark active disable");
         setCDisable("true");
@@ -142,7 +144,7 @@ export default function Weather () {
                 {form}
                 <div id="main">
                     <WeatherInfo info={cityTemp} precip={forecast.precipitation}/>
-                    <div className="row"  id="forecast">
+                    <div className="row mt-3"  id="forecast">
                         <Forecast info={forecast}/>
                     </div>
                 </div>
@@ -152,7 +154,7 @@ export default function Weather () {
         return (
             <div className= "Weather card container">
                 {form}
-                <h2>Loading ...</h2>
+                <h2>{search ? "Loading ...":""}</h2>
             </div>
         );
     }
