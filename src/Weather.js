@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Weather () {
     const apiKey = '055d247c8d86f6f7cc330f806f31830d';
-    let [city, setCity] = useState ("New York");
+    let [city, setCity] = useState ("New York"); //to use city in case of unit switch
     const unitArray = {metric:" km/h", imperial:" mph"};
     let [units, setUnits] = useState("metric");
     let [cityTemp, setCityTemp] = useState({wContent: false});
@@ -78,7 +78,7 @@ export default function Weather () {
     }
 
     function showC(event){
-        event.preventDefault(); 
+        event.preventDefault();
         setUnits("metric");
         setCButton("btn btn-dark active disable");
         setCDisable("true");
@@ -88,10 +88,11 @@ export default function Weather () {
         cityForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`};
         axios.get(apiUrl.cityWeather).then(weatherData);
         axios.get(apiUrl.cityForecast).then(forecastData);
+        setSearch(true);
     }
     function showF(event){
         event.preventDefault();
-        setUnits("imperial");
+        setUnits("imperial");// change of units for apiUrl
         setCButton("btn btn-dark");
         setCDisable("false");
         setFButton("btn btn-dark active disable");
@@ -100,6 +101,7 @@ export default function Weather () {
         cityForecast:`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`};
         axios.get(apiUrl.cityWeather).then(weatherData);
         axios.get(apiUrl.cityForecast).then(forecastData);
+        setSearch(true);
     }
 
     function searchSubmit(event){
@@ -123,27 +125,28 @@ export default function Weather () {
 
     function getPosition() {
         navigator.geolocation.getCurrentPosition(myPosition);
+        setSearch(true);
     }
 
-    const form = (<form id="city-form" onSubmit={searchSubmit}>
-                    <div className="row">
-                        <div className="col-7">
-                            <input type="search" placeholder="Enter a city" className="form-control mr-1" autoComplete="yes" onChange={newCity}/>
-                        </div>
-                        <div className="col-4">
-                            <input type="submit" value="🔍" className="btn btn-light mr-1"/>
-                            <input type="reset" value="Current Location" className="btn btn-light mr-4" onClick={getPosition}/>
-                            <a href="/" rel="noreferrer" className={cButton} role="button" data-bs-toggle="button" aria-disabled={cDisable} onClick={showC}>C</a> | <a href="/" rel="noreferrer" className={fButton} role="button" data-bs-toggle="button" aria-disabled={fDisable} onClick={showF}>F</a>
-                        </div>
-                    </div>
-                </form>);
+    let form = (
+        <div className="row city-form-div">
+            <div className="col">
+                <form id="city-form" className="mr-2" onSubmit={searchSubmit}>
+                    <input type="search" placeholder="Enter a city" className="form-control mb-1" autoComplete="yes" onChange={newCity}/>
+                    <input type="submit" value="Search" className="btn btn-light mr-4"/>
+                    <input type="reset" value="Current Location" className="btn btn-light mr-4" onClick={getPosition}/>
+                    <a href="/" rel="noreferrer" className={cButton} role="button" data-bs-toggle="button" aria-disabled={cDisable} onClick={showC}>C</a> | <a href="/" rel="noreferrer" className={fButton} role="button" data-bs-toggle="button" aria-disabled={fDisable} onClick={showF}>F</a>
+                </form>
+            </div>
+        </div>
+    );
 
     if (cityTemp.wContent && forecast.fContent){
         return (
             <div className= "Weather card container">
                 {form}
                 <div id="main">
-                    <WeatherInfo info={cityTemp} precip={forecast.precipitation}/>
+                    <WeatherInfo info={cityTemp} precip={forecast.precipitation} units={units}/>
                     <div className="row mt-3"  id="forecast">
                         <Forecast info={forecast}/>
                     </div>

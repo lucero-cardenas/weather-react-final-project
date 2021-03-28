@@ -4,6 +4,12 @@ import "./WeatherInfo.css"
 
 export default function WeatherInfo(cityTemp){
     console.log(cityTemp);
+    let units = "";
+    if (cityTemp.units === "metric"){
+        units = "C";
+    } else {
+        units = "F";
+    }
     return(
         <div>
             <div className="row">
@@ -28,7 +34,7 @@ export default function WeatherInfo(cityTemp){
                     <div className="row">
                         <span className="col-xs-8 col-sm-4">
                             <ul>
-                                <li><h2 className="card-title">{cityTemp.info.temperature}°</h2></li>
+                                <li><h2 className="card-title">{cityTemp.info.temperature}°{units}</h2></li>
                                 <li className="card-subtitle mb-2 text-muted">Feels like: {cityTemp.info.feels_like}°</li>
                             </ul>
                         </span>

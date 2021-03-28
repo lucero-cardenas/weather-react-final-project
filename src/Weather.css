@@ -1,13 +1,52 @@
-div .units {
-  position: relative;
-  left: 15rem;
-}
-
 h2 {
   text-align: center;
 }
-
+.Weather {
+  margin: auto;
+}
 .Weather #main {
   position: relative;
   left: 5rem;
+}
+
+#forecast {
+  position: relative;
+  left: 3rem;
+  margin-bottom: 1rem;
+}
+
+#city-form {
+  margin-top: 1rem;
+}
+.weather ul {
+  display: inline;
+}
+li {
+  list-style: none;
+}
+ul {
+  padding: 0px;
+}
+
+li h2 {
+  font-size: 65px;
+}
+#city-temp {
+  align-items: center;
+}
+#icon,
+#temp {
+  text-align: center;
+}
+
+.card {
+  margin: 30px;
+  background: linear-gradient(to top, #00ffd5ab 0%, #00d9ff86 100%);
+  min-width: 120px;
+}
+row {
+  padding: 30px auto;
+}
+form {
+  margin-bottom: 5px;
 }
