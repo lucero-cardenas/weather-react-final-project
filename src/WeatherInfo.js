@@ -27,7 +27,7 @@ export default function WeatherInfo(cityTemp){
                 <span className="col-xs-6 col-sm-2" id="icon">
                     <ul>
                         <li><h2 className="card-title">{cityTemp.info.icon}</h2></li>
-                        <li className="card-subtitle mb-2 text-muted">{cityTemp.info.description}</li>
+                        <li className="card-subtitle mb-2 text-muted text-capitalize">{cityTemp.info.description}</li>
                     </ul>
                 </span>
                 <span className="col-xs-12 col-sm-6"  id="temp">
