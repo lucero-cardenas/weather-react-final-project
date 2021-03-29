@@ -8,15 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 export default function Weather () {
     const apiKey = '055d247c8d86f6f7cc330f806f31830d';
     let [city, setCity] = useState ("New York"); //to use city in case of unit switch
-    let [position, setPosition] = useState ({lat:0, lon:0,});
     let [units, setUnits] = useState("metric");
     const unitArray = {metric:" km/h", imperial:" mph"};
-    let apiUrl = {
-        cityWeather:`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`,
-        cityForecast: `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`,
-        currLocWeather: `https://api.openweathermap.org/data/2.5/weather?lat=${position.lat}&lon=${position.lon}&units=${units}&appid=${apiKey}`,
-        currLocForecast: `https://api.openweathermap.org/data/2.5/forecast?lat=${position.lat}&lon=${position.lon}&units=${units}&appid=${apiKey}`,
-    };
     let [cityTemp, setCityTemp] = useState({wContent: false});
     let [forecast, setForecast] = useState({fContent: false});
     let icons = {
@@ -40,9 +33,6 @@ export default function Weather () {
         "50n": `fa-smog`
     };
     
-    let [search, setSearch] = useState(false); //to know when we're expecting results
-
- 
     function newCity(event) {
         setCity(event.target.value);
         console.log(city);
@@ -61,7 +51,6 @@ export default function Weather () {
             description:response.data.weather[0].description,
             feels_like:Math.round(response.data.main.feels_like)});
         setCity(response.data.name); //to use city in case of unit switch
-        setSearch(false); //to reset search
     }
 
     function forecastData(response){
@@ -79,54 +68,43 @@ export default function Weather () {
             wd3:forecastWeekDay(response.data.list[24].dt*1000), icon3:<i className={`fas ${icons[response.data.list[24].weather[0].icon]}`}></i>, temp3:Math.round(response.data.list[24].main.temp),
             wd4:forecastWeekDay(response.data.list[32].dt*1000), icon4:<i className={`fas ${icons[response.data.list[32].weather[0].icon]}`}></i>, temp4:Math.round(response.data.list[32].main.temp)
         });
-        setSearch(false); //to reset search
     }
 
     function showC(event){
         event.preventDefault();
+        setUnits("metric"); //change of units for apiUrl
         setCityTemp({ wContent: false });
         setForecast({ fContent: false });
-        setUnits("metric"); //change of units for apiUrl
-        if (city && search) {
-            searchSubmit(event);
-            setSearch(false);
-        }
     }
     function showF(event){
         event.preventDefault();
+    setUnits("imperial");// change of units for apiUrl
         setCityTemp({ wContent: false });
         setForecast({ fContent: false });
-        setUnits("imperial");// change of units for apiUrl
-        if (city && search) {
-            searchSubmit(event);
-            setSearch(false);
-        }
     }
 
-    function searchSubmit(event){
+    function searchSubmit(event) {
         event.preventDefault();
-        setCityTemp({ wContent: false });
-        setForecast({ fContent: false });
+        search();
+    }
+  function search() {
+        let apiUrl = {
+        cityWeather: `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${apiKey}`,
+        cityForecast: `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${apiKey}`,
+        };
         axios.get(apiUrl.cityWeather).then(weatherData);
         axios.get(apiUrl.cityForecast).then(forecastData);
-        setSearch(true);
     }
 
-    function myPosition(response) {
-        setPosition ({ 
-            lat: response.coords.latitude,
-            lon: response.coords.longitude,
-        });
-        if (position.lat !== 0) {
-            axios.get(apiUrl.currLocWeather).then(weatherData);
-            axios.get(apiUrl.currLocForecast).then(forecastData);
-        }
+    function myPosition(position) {
+        let apiUrl = {
+        currLocWeather: `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&units=${units}&appid=${apiKey}`,
+        currLocForecast: `https://api.openweathermap.org/data/2.5/forecast?lat=${position.coords.latitude}&lon=${position.coords.longitude}&units=${units}&appid=${apiKey}`,
+        };
+        axios.get(apiUrl.currLocWeather).then(weatherData);
+        axios.get(apiUrl.currLocForecast).then(forecastData);
     }
-
     function getPosition() {
-        setCityTemp({ wContent: false });
-        setForecast({ fContent: false });
-        setSearch(true);
         navigator.geolocation.getCurrentPosition(myPosition);
     }
 
@@ -157,7 +135,7 @@ export default function Weather () {
         </div>
     );
 
-    if (city && cityTemp.wContent && forecast.fContent){
+    if (cityTemp.wContent && forecast.fContent){
         return (
             <div className= "Weather card container">
                 {form}
@@ -170,10 +148,11 @@ export default function Weather () {
             </div>
         );
     } else {
+        search();
         return (
             <div className= "Weather card container">
                 {form}
-                <h2>{search ? "Loading ...":""}</h2>
+                <h2>Loading ...</h2>
             </div>
         );
     }
